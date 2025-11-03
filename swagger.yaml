@@ -1,0 +1,445 @@
+openapi: 3.1.0
+info:
+  title: MusicBand API
+  description: |-
+    REST API для управления коллекцией музыкальных групп и Grammy-сервисом.
+  version: 2
+servers:
+  - url: 'https://localhost:45382/api/v1'
+tags:
+  - name: MusicBand
+    description: управление коллекцией объектов MusicBand
+    # externalDocs:
+    #   # description: Find out more
+    #   url: https://swagger.io
+  - name: grammy
+    description: Дополнительные операции
+    # externalDocs:
+    #   # description: Дополнительные операции
+    #   url: https://swagger.io
+  # - name: user
+  #   description: Operations about user
+components:
+  schemas:
+    MusicBand:
+      type: object
+      required:
+        - id
+        - name
+        - coordinates
+        - creationDate
+        - numberOfParticipants
+        - genre
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          description: Автоматически генерируемый уникальный идентификатор
+        name:
+          type: string
+          minLength: 1
+        coordinates:
+          $ref: '#/components/schemas/Coordinates'
+        creationDate:
+          type: string
+          format: date
+        numberOfParticipants:
+          type: integer
+          minimum: 1
+        genre:
+          $ref: '#/components/schemas/MusicGenre'
+        frontMan:
+          $ref: '#/components/schemas/Person'
+    Coordinates:
+      type: object
+      required:
+        - x
+        - y
+      properties:
+        x:
+          type: integer
+          maximum: 943
+        y:
+          type: number
+    Person:
+      type: object
+      required:
+        - name
+        - birthday
+        - hairColor
+        - nationality
+        - location
+      properties:
+        name:
+          type: string
+          minLength: 1
+        birthday:
+          type: string
+          format: date-time
+        hairColor:
+          $ref: '#/components/schemas/Color'
+        nationality:
+          $ref: '#/components/schemas/Country'
+        location:
+          $ref: '#/components/schemas/Location'
+    Location:
+      type: object
+      required:
+        - x
+        - y
+        - name
+      properties:
+        x:
+          type: number
+          format: float
+        y:
+          type: integer
+        name:
+          type: string
+          minLength: 1
+    MusicGenre:
+      type: string
+      enum:
+        - PROGRESSIVE_ROCK
+        - RAP
+        - JAZZ
+        - SOUL
+        - BRIT_POP
+    Color:
+      type: string
+      enum:
+        - GREEN
+        - RED
+        - BLUE
+        - ORANGE
+        - WHITE
+    Country:
+      type: string
+      enum:
+        - GERMANY
+        - THAILAND
+        - NORTH_KOREA
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+
+paths:
+  /bands:
+    get:
+      tags:
+        - MusicBand
+      summary: Получить список всех музыкальных групп
+      description: Поддерживает фильтрацию, сортировку и постраничный вывод
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+          description: Номер страницы
+        - name: size
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+          description: Размер страницы
+
+        - name: sortField
+          in: query
+          schema:
+            type: string
+            enum: [
+              id,
+              name,
+              creationDate,
+              numberOfParticipants,
+              genre,
+              frontMan.name,
+              frontMan.birthday,
+              frontMan.hairColor,
+              frontMan.nationality,
+              frontMan.location.x,
+              frontMan.location.y,
+              frontMan.location.name
+            ]
+          description: Поле для сортировки
+
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: Порядок сортировки (по возрастанию или по убыванию)
+
+
+        - name: filter
+          in: query
+          schema:
+            type: string
+          description: Фильтр в формате field:value
+      responses:
+        '200':
+          description: Список групп
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MusicBand'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+        '400':
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      tags:
+        - MusicBand
+      summary: Добавить новую музыкальную группу
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MusicBand'
+      responses:
+        '201':
+          description: Создана новая группа
+        '400':
+          description: Ошибка валидации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /bands/{id}:
+    get:
+      tags:
+        - MusicBand
+      summary: Получить группу по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Найденная группа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MusicBand'
+        '404':
+          description: Группа не найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '400':
+          description: Некорректный ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      tags:
+        - MusicBand
+      summary: Обновить группу по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MusicBand'
+      responses:
+        '200':
+          description: Группа обновлена
+
+        '400':
+          description: Некорректный ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      tags:
+        - MusicBand
+      summary: Удалить группу по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Группа удалена
+        '404':
+          description: Группа не найдена
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /bands/group-by-genre:
+    get:
+      tags:
+        - MusicBand
+      summary: Сгруппировать по жанру
+      responses:
+        '200':
+          description: Количество групп по жанрам
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: integer
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /bands/count-by-frontman:
+    get:
+      tags:
+        - MusicBand
+      summary: Посчитать группы по имени фронтмена
+      parameters:
+        - name: frontMan
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Количество
+          content:
+            application/json:
+              schema:
+                type: integer
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /bands/search-by-name:
+    get:
+      tags:
+        - MusicBand
+      summary: Найти группы по началу имени
+      parameters:
+        - name: prefix
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Список групп
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MusicBand'
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /grammy/band/{band-id}/nominate/{genre}:
+    post:
+      tags:
+        - Grammy
+      summary: Номинировать группу на премию
+      parameters:
+        - name: band-id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: genre
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/MusicGenre'
+      responses:
+        '200':
+          description: Группа номинирована
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+  /grammy/band/{band-id}/reward/{genre}:
+    post:
+      tags:
+        - Grammy
+      summary: Наградить группу премией
+      parameters:
+        - name: band-id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: genre
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/MusicGenre'
+      responses:
+        '200':
+          description: Группа награждена
+        '500':
+          description: Внутренняя ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'

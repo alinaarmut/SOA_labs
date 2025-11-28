@@ -8,13 +8,24 @@ import java.io.IOException;
 @Provider
 public class CorsFilter implements ContainerResponseFilter {
 
-    @Override
-    public void filter(jakarta.ws.rs.container.ContainerRequestContext requestContext,
-                       ContainerResponseContext responseContext) throws IOException {
-        responseContext.getHeaders().add("Access-Control-Allow-Origin", "*");
-        responseContext.getHeaders().add("Access-Control-Allow-Headers", "origin, content-type, accept, authorization");
-        responseContext.getHeaders().add("Access-Control-Allow-Credentials", "true");
-        responseContext.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, HEAD");
-        responseContext.getHeaders().add("Access-Control-Max-Age", "1209600");
+        @Override
+        public void filter(jakarta.ws.rs.container.ContainerRequestContext requestContext,
+                           ContainerResponseContext responseContext) throws IOException {
+
+            String origin = requestContext.getHeaderString("Origin");
+
+            if ("https://se.ifmo.ru".equals(origin) ||
+                    "https://helios.cs.ifmo.ru".equals(origin)) {
+                responseContext.getHeaders().putSingle("Access-Control-Allow-Origin", origin);
+                responseContext.getHeaders().putSingle("Vary", "Origin");
+            }
+
+            responseContext.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");
+            responseContext.getHeaders().putSingle("Access-Control-Allow-Headers",
+                    "Origin, Content-Type, Accept, Authorization");
+            responseContext.getHeaders().putSingle("Access-Control-Allow-Methods",
+                    "GET, POST, PUT, DELETE, OPTIONS, HEAD");
+            responseContext.getHeaders().putSingle("Access-Control-Max-Age", "1209600");
+        }
     }
-}
+

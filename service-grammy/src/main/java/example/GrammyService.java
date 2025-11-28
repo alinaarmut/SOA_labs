@@ -18,8 +18,8 @@ import java.security.cert.X509Certificate;
 
 @Stateless
 public class GrammyService {
-    private final String BASE_URL = "https://localhost:8443/musicband-service/api/v1/bands";
     private final Client client;
+    private final String BASE_URL = "https://helios.cs.ifmo.ru:10843/musicband-service/api/v1/bands";
     @Inject
     private GrammyNominationDao nominationDao;
 
@@ -57,7 +57,7 @@ public class GrammyService {
                 "&size=" + (size != null ? size : 10);
         if (sortBy != null) url += "&sortBy=" + sortBy;
         if (filterName != null) url += "&filterName=" + filterName;
-
+        System.out.println("DEBUG GrammyService: target url = " + url);
         return client.target(url)
                 .request(MediaType.APPLICATION_JSON)
                 .get();

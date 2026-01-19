@@ -1,13 +1,15 @@
 package example;
 
 import example.model.GrammyNomination;
-import jakarta.ejb.Stateless;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-@Stateless
+@Repository
+@Transactional
 public class GrammyNominationDao {
-    @PersistenceContext(unitName = "GrammyPU")
+    @PersistenceContext
     private EntityManager em;
 
     public void save(GrammyNomination nomination) {

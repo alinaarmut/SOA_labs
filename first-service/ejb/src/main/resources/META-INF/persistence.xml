@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             version="3.0"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence
+                                 https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+
+    <persistence-unit name="MusicBandPU" transaction-type="JTA">
+        <!-- Используем DataSource из tomee.xml -->
+        <jta-data-source>musicbandDS</jta-data-source>
+
+        <class>org.example.model.MusicBand</class>
+        <class>org.example.model.Coordinates</class>
+        <class>org.example.model.Location</class>
+        <class>org.example.model.Person</class>
+
+        <!-- и разрешить автопоиск остальных -->
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+
+        <properties>
+            <property name="jakarta.persistence.schema-generation.database.action"
+                      value="none"/>
+        </properties>
+    </persistence-unit>
+</persistence>

@@ -2,112 +2,80 @@ package example;
 
 import example.model.GrammyNomination;
 import example.model.GrammyType;
-import jakarta.ejb.Stateless;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
-import jakarta.ws.rs.client.Entity;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-@Stateless
+@Service
 public class GrammyService {
-    private final Client client;
-    private final String BASE_URL = "https://helios.cs.ifmo.ru:10843/musicband-service/api/v1/bands";
-    @Inject
-    private GrammyNominationDao nominationDao;
 
-    public GrammyService() {
-        try {
-            // Создаём SSL Context для доверия самоподписанным сертификатам
-            SSLContext sslContext = SSLContext.getInstance("TLS");
+//    private final String BASE_URL = "https://helios.cs.ifmo.ru:10843/musicband-service/api/v1/bands";
+private final String BASE_URL = "http://localhost:10843/api/v1/bands";// для load balancer
 
-            TrustManager[] trustAllCerts = new TrustManager[]{
-                    new X509TrustManager() {
-                        public X509Certificate[] getAcceptedIssuers() {
-                            return new X509Certificate[0];
-                        }
-                        public void checkClientTrusted(X509Certificate[] certs, String authType) {}
-                        public void checkServerTrusted(X509Certificate[] certs, String authType) {}
-                    }
-            };
+    private final GrammyNominationDao nominationDao;
+    private final RestTemplate restTemplate;
 
-            sslContext.init(null, trustAllCerts, new SecureRandom());
-
-
-            this.client = ClientBuilder.newBuilder()
-                    .sslContext(sslContext)
-                    .hostnameVerifier((hostname, session) -> true)
-                    .build();
-
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to initialize HTTPS client", e);
-        }
+    public GrammyService(GrammyNominationDao nominationDao, RestTemplate restTemplate) {
+        this.nominationDao = nominationDao;
+        this.restTemplate = restTemplate;
     }
 
 
-    public Response getBands(Integer page, Integer size, String sortBy, String filterName) {
+    public ResponseEntity<?> getBands(Integer page, Integer size, String sortBy, String filterName) {
         String url = BASE_URL + "?page=" + (page != null ? page : 0) +
                 "&size=" + (size != null ? size : 10);
         if (sortBy != null) url += "&sortBy=" + sortBy;
         if (filterName != null) url += "&filterName=" + filterName;
         System.out.println("DEBUG GrammyService: target url = " + url);
-        return client.target(url)
-                .request(MediaType.APPLICATION_JSON)
-                .get();
+        String response = restTemplate.getForObject(url, String.class);
+        return ResponseEntity.ok(response);
     }
 
-    public Response addBand(String bandJson) {
-        return client.target(BASE_URL)
-                .request(MediaType.APPLICATION_JSON)
-                .post(Entity.json(bandJson));
+    public ResponseEntity<?> addBand(String bandJson) {
+        String response = restTemplate.postForObject(BASE_URL, bandJson, String.class);
+        return ResponseEntity.ok(response);
     }
 
-    public Response getBandById(int id) {
-        return client.target(BASE_URL + "/" + id)
-                .request(MediaType.APPLICATION_JSON)
-                .get();
+    public ResponseEntity<?> getBandById(int id) {
+        String response = restTemplate.getForObject(BASE_URL + "/" + id, String.class);
+        if (response != null) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("{\"message\":\"Band with id " + id + " not found\"}");
+        }
     }
 
-    public Response deleteBandById(int id) {
-        return client.target(BASE_URL + "/" + id)
-                .request(MediaType.APPLICATION_JSON)
-                .delete();
+    public ResponseEntity<Void> deleteBandById(int id) {
+        restTemplate.delete(BASE_URL + "/" + id);
+        return ResponseEntity.ok().build();
     }
 
-    public Response updateBand(long id, String bandJson) {
-        return client.target(BASE_URL + "/" + id)
-                .request(MediaType.APPLICATION_JSON)
-                .put(Entity.json(bandJson));
+    public ResponseEntity<Void> updateBand(long id, String bandJson) {
+        restTemplate.put(BASE_URL + "/" + id, bandJson);
+        return ResponseEntity.ok().build();
     }
 
-    public Response groupByGenre() {
-        return client.target(BASE_URL + "/group-by-genre")
-                .request(MediaType.APPLICATION_JSON)
-                .get();
+    public ResponseEntity<String> groupByGenre() {
+        String response = restTemplate.getForObject(BASE_URL + "/group-by-genre", String.class);
+        return ResponseEntity.ok(response);
     }
 
-    public Response countByFrontman(String frontMan) {
-        return client.target(BASE_URL + "/count-by-frontman?frontMan=" + frontMan)
-                .request(MediaType.APPLICATION_JSON)
-                .get();
+    public ResponseEntity<String> countByFrontman(String frontMan) {
+        String response = restTemplate.getForObject(BASE_URL + "/count-by-frontman?frontMan=" + frontMan, String.class);
+        return ResponseEntity.ok(response);
     }
 
-    public Response searchByName(String prefix) {
-        return client.target(BASE_URL + "/search-by-name?prefix=" + prefix)
-                .request(MediaType.APPLICATION_JSON)
-                .get();
+    public ResponseEntity<String> searchByName(String prefix) {
+        String response = restTemplate.getForObject(BASE_URL + "/search-by-name?prefix=" + prefix, String.class);
+        return ResponseEntity.ok(response);
     }
 
     public boolean nominateBand(int bandId, String genre) {
-        Response bandResponse = getBandById(bandId);
-        if (bandResponse.getStatus() != 200) return false;
+        ResponseEntity<?> bandResponse = getBandById(bandId);
+        if (bandResponse.getStatusCode().isError()) return false;
 
         GrammyNomination nomination = new GrammyNomination();
         nomination.setBandId(bandId);

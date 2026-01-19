@@ -1,0 +1,46 @@
+server:
+  port: 10843
+  ssl:
+    enabled: false
+
+spring:
+  application:
+    name: backend
+  datasource:
+    url: jdbc:postgresql://localhost:5432/studs
+    username: s367826
+    password: 4Xb2gijcYKqkn0xt
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      config:
+        enabled: true
+      discovery:
+        enabled: true
+        service-name: ${spring.application.name}  # musicband-service
+        instance-id: ${spring.application.name}-${server.port}-${random.value}
+        health-check-interval: 10s
+        health-check-path: /actuator/health  # ???????? ??? ???????? ???????!
+        tags: [api-version=v1]
+        prefer-ip-address: true
+  config:
+    import: optional:consul
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics  # ???????? health!
+  endpoint:
+    health:
+      show-details: always
+

@@ -1,120 +1,111 @@
 package example;
 
-import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import javax.ws.rs.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Path("/grammy")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+@RestController
+@RequestMapping("/api/grammy")
 public class GrammyResource {
 
-    @Inject
-    private GrammyService service;
+    private final GrammyService service;
+
+    public GrammyResource(GrammyService service) {
+        this.service = service;
+    }
 
 
-    @GET
-    @Path("/bands")
-    public Response getBands(
-            @QueryParam("page") Integer page,
-            @QueryParam("size") Integer size,
-            @QueryParam("sortBy") String sortBy,
-            @QueryParam("filterName") String filterName
+    @GetMapping("/bands")
+    public ResponseEntity<?> getBands(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String filterName
     ) {
         return service.getBands(page, size, sortBy, filterName);
     }
 
-    @POST
-    @Path("/bands")
-    public Response addBand(String bandJson) {
+    @PostMapping("/bands")
+    public ResponseEntity<?> addBand(@RequestBody String bandJson) {
         return service.addBand(bandJson);
     }
 
-    @GET
-    @Path("/bands/{id}")
-    public Response getBandById(@PathParam("id") int id) {
+    @GetMapping("/bands/{id}")
+    public ResponseEntity<?> getBandById(@PathVariable int id) {
         return service.getBandById(id);
     }
 
-    @PUT
-    @Path("/bands/{id}")
-    public Response updateBand(
-            @PathParam("id") long id,
-            String bandJson
+    @PutMapping("/bands/{id}")
+    public ResponseEntity<?> updateBand(
+            @PathVariable long id,
+            @RequestBody String bandJson
     ) {
         return service.updateBand(id, bandJson);
     }
 
-    @DELETE
-    @Path("/bands/{id}")
-    public Response deleteBand(@PathParam("id") int id) {
+    @DeleteMapping("/bands/{id}")
+    public ResponseEntity<?> deleteBand(@PathVariable int id) {
         return service.deleteBandById(id);
     }
 
-    @GET
-    @Path("/bands/group-by-genre")
-    public Response groupByGenre() {
+    @GetMapping("/bands/group-by-genre")
+    public ResponseEntity<?> groupByGenre() {
         return service.groupByGenre();
     }
 
-    @GET
-    @Path("/bands/count-by-frontman")
-    public Response countByFrontman(@QueryParam("frontMan") String frontMan) {
+    @GetMapping("/bands/count-by-frontman")
+    public ResponseEntity<?> countByFrontman(@RequestParam String frontMan) {
         return service.countByFrontman(frontMan);
     }
 
-    @GET
-    @Path("/bands/search-by-name")
-    public Response searchByName(@QueryParam("prefix") String prefix) {
+    @GetMapping("/bands/search-by-name")
+    public ResponseEntity<?> searchByName(@RequestParam String prefix) {
         return service.searchByName(prefix);
     }
 
-    @POST
-    @Path("/band/{band-id}/nominate/{genre}")
-    public Response nominateBand(
+
+    @PostMapping("/{bandId}/nominate/{genre}")
+    public ResponseEntity<?> nominateBand(
             @PathParam("band-id") int bandId,
             @PathParam("genre") String genre
     ) {
         try {
-            Response bandResponse = service.getBandById(bandId);
-            if (bandResponse.getStatus() != 200) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("{\"message\":\"Band with id " + bandId + " not found!\"}").build();
+            ResponseEntity<?> bandResponse = service.getBandById(bandId);
+            if (bandResponse.getStatusCode() != HttpStatus.OK) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("{\"message\":\"Band with id " + bandId + " not found!\"}");
             }
 
             boolean ok = service.nominateBand(bandId, genre);
-            if (ok) return Response.ok().entity("{\"message\":\"Band nominated\"}").build();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"message\": \"Failed to nominate band\"}").build();
+            if (ok) return ResponseEntity.status(HttpStatus.OK).body("{\"message\":\"Band nominated\"}");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"message\": \"Failed to nominate band\"}");
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"message\": \"Разработчик ушел играть на гитаре!\"}").build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"message\": \"Разработчик ушел играть на гитаре!\"}");
         }
     }
 
-    @POST
-    @Path("/band/{band-id}/reward/{genre}")
-    public Response rewardBand(
+
+    public ResponseEntity<?> rewardBand(
             @PathParam("band-id") int bandId,
             @PathParam("genre") String genre
     ) {
         try {
-            Response bandResponse = service.getBandById(bandId);
-            if (bandResponse.getStatus() != 200) {
-                return Response.status(Response.Status.NOT_FOUND)
-                        .entity("{\"message\":\"Band with id " + bandId + " not found!\"}").build();
+            ResponseEntity<?> bandResponse = service.getBandById(bandId);
+            if (bandResponse.getStatusCode() != HttpStatus.OK) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("{\"message\":\"Band with id " + bandId + " not found!\"}");
             }
 
             boolean ok = service.rewardBand(bandId, genre);
-            if (ok) return Response.ok().entity("{\"message\":\"Band rewarded\"}").build();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"message\": \"Failed to reward band\"}").build();
+            if (ok) return ResponseEntity.status(HttpStatus.OK).body("{\"message\":\"Band rewarded\"}");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"message\": \"Failed to reward band\"}");
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"message\": \"Разработчик ушел играть на гитаре!\"}").build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"message\": \"Разработчик ушел играть на гитаре!\"}");
         }
     }
-
-
 }

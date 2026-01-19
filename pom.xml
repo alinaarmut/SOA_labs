@@ -9,8 +9,11 @@
     <version>1.0</version>
     <packaging>pom</packaging>
     <modules>
-        <module>music-service</module>
         <module>service-grammy</module>
+        <module>first-service</module>
+        <module>first-service/ejb</module>
+        <module>first-service/backend</module>
+        <module>first-service/common</module>
     </modules>
 
 

@@ -56,6 +56,7 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
@@ -64,8 +65,8 @@ import javax.net.ssl.SSLContext;
 @Configuration
 public class RestConfig {
 
-    @Bean
-    @LoadBalanced
+    @Bean("backendRestTemplate")
+    @Primary
     public RestTemplate restTemplate() throws Exception {
         // SSL context: доверяем всем (dev only)
         TrustStrategy acceptingTrustStrategy = (chain, authType) -> true;
@@ -87,6 +88,11 @@ public class RestConfig {
                 new HttpComponentsClientHttpRequestFactory((HttpClient) httpClient);
 
         return new RestTemplate(requestFactory);
+    }
+    @Bean("loadBalancedRestTemplate")
+    @LoadBalanced
+    public RestTemplate loadBalancedRestTemplate() {
+        return new RestTemplate();
     }
 }
 

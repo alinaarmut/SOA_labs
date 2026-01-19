@@ -2,6 +2,10 @@ server:
   port: 10843
   ssl:
     enabled: false
+#    key-store: /Users/a/Downloads/musicband-service/service-grammy/src/main/resources/keystore.p12
+#    key-store-password: yourpassword
+#    key-store-type: PKCS12
+#    key-alias: myapp
 
 spring:
   application:
@@ -26,21 +30,13 @@ spring:
         enabled: true
       discovery:
         enabled: true
-        service-name: ${spring.application.name}  # musicband-service
+        service-name: ${spring.application.name}
         instance-id: ${spring.application.name}-${server.port}-${random.value}
         health-check-interval: 10s
-        health-check-path: /actuator/health  # ???????? ??? ???????? ???????!
+        health-check-path: /api/v1/bands/health
         tags: [api-version=v1]
         prefer-ip-address: true
   config:
     import: optional:consul
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics  # ???????? health!
-  endpoint:
-    health:
-      show-details: always
 

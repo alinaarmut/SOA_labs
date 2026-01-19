@@ -1,0 +1,59 @@
+server:
+  port: 8085
+  ssl:
+    enabled: true
+    key-store: /Users/a/Downloads/musicband-service/service-grammy/src/main/resources/keystore.p12
+    key-store-password: yourpassword
+    key-store-type: PKCS12
+    key-alias: myapp
+    protocols: TLSv1.2,TLSv1.3
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    discovery:
+      enabled: true
+
+    service-registry:
+      enabled: false
+      auto-registration:
+        enabled: false
+
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        enabled: true
+        register: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: false
+
+zuul:
+  routes:
+    backend:
+#      path: /backend/**
+#      url: http://localhost:10843
+      path: /api/grammy/**
+      url: http://localhost:8444
+      strip-prefix: true
+    grammy:
+      path: /api/grammy/**
+      url: http://localhost:8444/api/grammy
+      strip-prefix: true
+
+ribbon:
+  eureka:
+    enabled: true
+
+logging:
+  level:
+    root: INFO
+    example.GrammyService: DEBUG
+    example.GrammyResource: DEBUG
+    org.springframework.web.client.RestTemplate: DEBUG

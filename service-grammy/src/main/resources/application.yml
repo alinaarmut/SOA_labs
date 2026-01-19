@@ -3,11 +3,11 @@ spring:
     name: service-grammy
   profiles:
     active: dev
-#  config:
-#    import: configserver:http://localhost:8888  # Config Server
-#  cloud:
-#    config:
-#      fail-fast: false # если true приложение упадет если не будет конфига
+  config:
+    import: configserver:http://localhost:8888
+  cloud:
+    config:
+      fail-fast: false # если true приложение упадет если не будет конфига
   datasource:
     url: jdbc:postgresql://localhost:5432/studs
     username: s367826
@@ -24,21 +24,18 @@ server:
   port: 8444
   ssl:
     enabled: false
-#    key-store: classpath:keystore.p12
-#    key-store-password: yourpassword
-#    key-store-type: PKCS12
 cloud:
   consul:
     host: localhost
     port: 8500
     discovery:
       enabled: true
-      register: false  # не регистрируемся в Consul
+      register: false
     config:
-      enabled: false  # отключаем Consul Config
+      enabled: false
   service-registry:
     auto-registration:
-      enabled: false  # отключаем авто-регистрацию через Consul
+      enabled: false
 
 
 eureka:
@@ -54,5 +51,5 @@ eureka:
 spring.cloud.loadbalancer.enabled: false
 ribbon:
   eureka:
-    enabled: true  # по умолчанию Ribbon использует Eureka
+    enabled: true
   listOfServers: service-grammy:8444

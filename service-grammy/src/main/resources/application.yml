@@ -21,7 +21,8 @@ spring:
         show_sql: true
 
 server:
-  port: 8444
+#  port: ${PORT:8444}
+  port: 0
   ssl:
     enabled: false
 cloud:
@@ -45,11 +46,11 @@ eureka:
     register-with-eureka: true
   instance:
     prefer-ip-address: true
-    instance-id: ${spring.application.name}:${server.port}
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+    health-check-url-path: /actuator/health
 
 # LoadBalancer
 spring.cloud.loadbalancer.enabled: false
 ribbon:
   eureka:
     enabled: true
-  listOfServers: service-grammy:8444

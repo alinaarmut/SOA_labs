@@ -2,11 +2,6 @@ server:
   port: 10843
   ssl:
     enabled: false
-#    key-store: /Users/a/Downloads/musicband-service/service-grammy/src/main/resources/keystore.p12
-#    key-store-password: yourpassword
-#    key-store-type: PKCS12
-#    key-alias: myapp
-
 spring:
   application:
     name: backend

@@ -29,27 +29,28 @@ spring:
 
 eureka:
   client:
+    registry-fetch-interval-seconds: 5
     service-url:
       defaultZone: http://localhost:8761/eureka/
     fetch-registry: true
-    register-with-eureka: false
-
+    register-with-eureka: false # регистрируем в eureka
+  server:
+    eviction-interval-timer-in-ms: 10000
 zuul:
   routes:
-    backend:
-#      path: /backend/**
-#      url: http://localhost:10843
-      path: /api/grammy/**
-      url: http://localhost:8444
-      strip-prefix: true
     grammy:
       path: /api/grammy/**
-      url: http://localhost:8444/api/grammy
-      strip-prefix: true
+      serviceId: SERVICE-GRAMMY
+      strip-prefix: false
 
-ribbon:
-  eureka:
-    enabled: true
+SERVICE-GRAMMY:
+  ribbon:
+    eager-load:
+      clients: SERVICE-GRAMMY
+    ServerListRefreshInterval: 100 # 0,1 с обновление списка
+    PingUrl: /actuator/health # тк по умолчанию пингует /
+    NFLoadBalancerPingInterval: 2000
+    NFLoadBalancerPingClassName: com.netflix.loadbalancer.PingUrl
 
 logging:
   level:
@@ -57,3 +58,5 @@ logging:
     example.GrammyService: DEBUG
     example.GrammyResource: DEBUG
     org.springframework.web.client.RestTemplate: DEBUG
+    com.netflix.loadbalancer.LoadBalancerContext: DEBUG
+

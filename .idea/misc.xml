@@ -18,9 +18,11 @@
         <option value="$PROJECT_DIR$/first-service/service-music/pom.xml" />
         <option value="$PROJECT_DIR$/g/pom.xml" />
         <option value="$PROJECT_DIR$/grammy/pom.xml" />
+        <option value="$PROJECT_DIR$/mule-esb/pom.xml" />
         <option value="$PROJECT_DIR$/music-service/pom.xml" />
         <option value="$PROJECT_DIR$/musicband-ejb/pom.xml" />
         <option value="$PROJECT_DIR$/muusicband-ejb/pom.xml" />
+        <option value="$PROJECT_DIR$/rest-adapter/pom.xml" />
       </set>
     </option>
   </component>

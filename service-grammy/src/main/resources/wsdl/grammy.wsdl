@@ -1,0 +1,419 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:tns="http://ws.example.org/"
+        xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:ns1="http://schemas.xmlsoap.org/soap/http"
+        name="GrammyWebService"
+        targetNamespace="http://ws.example.org/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://ws.example.org/" elementFormDefault="unqualified" targetNamespace="http://ws.example.org/" version="1.0">
+
+  <xs:element name="addBand" type="tns:addBand"/>
+
+  <xs:element name="addBandResponse" type="tns:addBandResponse"/>
+
+  <xs:element name="countByFrontman" type="tns:countByFrontman"/>
+
+  <xs:element name="countByFrontmanResponse" type="tns:countByFrontmanResponse"/>
+
+  <xs:element name="deleteBand" type="tns:deleteBand"/>
+
+  <xs:element name="deleteBandResponse" type="tns:deleteBandResponse"/>
+
+  <xs:element name="getBandById" type="tns:getBandById"/>
+
+  <xs:element name="getBandByIdResponse" type="tns:getBandByIdResponse"/>
+
+  <xs:element name="getBands" type="tns:getBands"/>
+
+  <xs:element name="getBandsResponse" type="tns:getBandsResponse"/>
+
+  <xs:element name="groupByGenre" type="tns:groupByGenre"/>
+
+  <xs:element name="groupByGenreResponse" type="tns:groupByGenreResponse"/>
+
+  <xs:element name="nominateBand" type="tns:nominateBand"/>
+
+  <xs:element name="nominateBandResponse" type="tns:nominateBandResponse"/>
+
+  <xs:element name="rewardBand" type="tns:rewardBand"/>
+
+  <xs:element name="rewardBandResponse" type="tns:rewardBandResponse"/>
+
+  <xs:element name="searchByName" type="tns:searchByName"/>
+
+  <xs:element name="searchByNameResponse" type="tns:searchByNameResponse"/>
+
+  <xs:element name="updateBand" type="tns:updateBand"/>
+
+  <xs:element name="updateBandResponse" type="tns:updateBandResponse"/>
+
+  <xs:complexType name="rewardBand">
+    <xs:sequence>
+      <xs:element name="bandId" type="xs:int"/>
+      <xs:element minOccurs="0" name="genre" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="rewardBandResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getBandById">
+    <xs:sequence>
+      <xs:element name="id" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getBandByIdResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="deleteBand">
+    <xs:sequence>
+      <xs:element name="id" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="deleteBandResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="nominateBand">
+    <xs:sequence>
+      <xs:element name="bandId" type="xs:int"/>
+      <xs:element minOccurs="0" name="genre" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="nominateBandResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="searchByName">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="prefix" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="searchByNameResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="addBand">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="bandJson" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="addBandResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getBands">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="page" type="xs:int"/>
+      <xs:element minOccurs="0" name="size" type="xs:int"/>
+      <xs:element minOccurs="0" name="sortBy" type="xs:string"/>
+      <xs:element minOccurs="0" name="filterName" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getBandsResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="updateBand">
+    <xs:sequence>
+      <xs:element name="id" type="xs:long"/>
+      <xs:element minOccurs="0" name="bandJson" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="updateBandResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="countByFrontman">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="frontMan" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="countByFrontmanResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="groupByGenre">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="groupByGenreResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="rewardBand">
+    <wsdl:part element="tns:rewardBand" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="groupByGenreResponse">
+    <wsdl:part element="tns:groupByGenreResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateBandResponse">
+    <wsdl:part element="tns:updateBandResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getBandById">
+    <wsdl:part element="tns:getBandById" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteBand">
+    <wsdl:part element="tns:deleteBand" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="nominateBand">
+    <wsdl:part element="tns:nominateBand" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="rewardBandResponse">
+    <wsdl:part element="tns:rewardBandResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="updateBand">
+    <wsdl:part element="tns:updateBand" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="countByFrontmanResponse">
+    <wsdl:part element="tns:countByFrontmanResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="groupByGenre">
+    <wsdl:part element="tns:groupByGenre" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getBandByIdResponse">
+    <wsdl:part element="tns:getBandByIdResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addBandResponse">
+    <wsdl:part element="tns:addBandResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="nominateBandResponse">
+    <wsdl:part element="tns:nominateBandResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="searchByName">
+    <wsdl:part element="tns:searchByName" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getBandsResponse">
+    <wsdl:part element="tns:getBandsResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="addBand">
+    <wsdl:part element="tns:addBand" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="searchByNameResponse">
+    <wsdl:part element="tns:searchByNameResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getBands">
+    <wsdl:part element="tns:getBands" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteBandResponse">
+    <wsdl:part element="tns:deleteBandResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="countByFrontman">
+    <wsdl:part element="tns:countByFrontman" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="GrammyService">
+    <wsdl:operation name="rewardBand">
+      <wsdl:input message="tns:rewardBand" name="rewardBand">
+    </wsdl:input>
+      <wsdl:output message="tns:rewardBandResponse" name="rewardBandResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getBandById">
+      <wsdl:input message="tns:getBandById" name="getBandById">
+    </wsdl:input>
+      <wsdl:output message="tns:getBandByIdResponse" name="getBandByIdResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteBand">
+      <wsdl:input message="tns:deleteBand" name="deleteBand">
+    </wsdl:input>
+      <wsdl:output message="tns:deleteBandResponse" name="deleteBandResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="nominateBand">
+      <wsdl:input message="tns:nominateBand" name="nominateBand">
+    </wsdl:input>
+      <wsdl:output message="tns:nominateBandResponse" name="nominateBandResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="searchByName">
+      <wsdl:input message="tns:searchByName" name="searchByName">
+    </wsdl:input>
+      <wsdl:output message="tns:searchByNameResponse" name="searchByNameResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="addBand">
+      <wsdl:input message="tns:addBand" name="addBand">
+    </wsdl:input>
+      <wsdl:output message="tns:addBandResponse" name="addBandResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getBands">
+      <wsdl:input message="tns:getBands" name="getBands">
+    </wsdl:input>
+      <wsdl:output message="tns:getBandsResponse" name="getBandsResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateBand">
+      <wsdl:input message="tns:updateBand" name="updateBand">
+    </wsdl:input>
+      <wsdl:output message="tns:updateBandResponse" name="updateBandResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="countByFrontman">
+      <wsdl:input message="tns:countByFrontman" name="countByFrontman">
+    </wsdl:input>
+      <wsdl:output message="tns:countByFrontmanResponse" name="countByFrontmanResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="groupByGenre">
+      <wsdl:input message="tns:groupByGenre" name="groupByGenre">
+    </wsdl:input>
+      <wsdl:output message="tns:groupByGenreResponse" name="groupByGenreResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="GrammyWebServiceSoapBinding" type="tns:GrammyService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="rewardBand">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="rewardBand">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="rewardBandResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getBandById">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getBandById">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getBandByIdResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="deleteBand">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="deleteBand">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="deleteBandResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="nominateBand">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="nominateBand">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="nominateBandResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="searchByName">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="searchByName">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="searchByNameResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="addBand">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="addBand">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="addBandResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getBands">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getBands">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getBandsResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="updateBand">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="updateBand">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="updateBandResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="countByFrontman">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="countByFrontman">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="countByFrontmanResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="groupByGenre">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="groupByGenre">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="groupByGenreResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="GrammyWebService">
+    <wsdl:port binding="tns:GrammyWebServiceSoapBinding" name="GrammyServicePort">
+      <soap:address location="http://localhost:8444/services/grammy"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

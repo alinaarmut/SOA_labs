@@ -19,6 +19,9 @@ public class MusicBandService {
     }
 
     public List<MusicBand> getAll(int page, int size, String sortBy, String filterName) {
+        if (filterName != null && !filterName.trim().isEmpty()) {
+            return ejb.searchByNamePrefix(filterName.trim());
+        }
         return ejb.getAll();
     }
 

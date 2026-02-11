@@ -19,24 +19,32 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         show_sql: true
-
+cxf:
+  path: /services
+  servlet:
+    init:
+      service-list-path: /info
+grammy:
+  mule:
+    soap-address: http://localhost:8082/integration
+    wsdl: http://localhost:8082/integration?wsdl
 server:
-#  port: ${PORT:8444}
-  port: 0
+  port: ${PORT:8444} # фикс порт для адаптера
+#  port: 0
   ssl:
     enabled: false
-cloud:
-  consul:
-    host: localhost
-    port: 8500
-    discovery:
-      enabled: true
-      register: false
-    config:
-      enabled: false
-  service-registry:
-    auto-registration:
-      enabled: false
+#cloud:
+#  consul:
+#    host: localhost
+#    port: 8500
+#    discovery:
+#      enabled: true
+#      register: false
+#    config:
+#      enabled: false
+#  service-registry:
+#    auto-registration:
+#      enabled: false
 
 
 eureka:
@@ -53,4 +61,4 @@ eureka:
 spring.cloud.loadbalancer.enabled: false
 ribbon:
   eureka:
-    enabled: true
+    enabled: false

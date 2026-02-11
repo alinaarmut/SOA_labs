@@ -7,7 +7,7 @@ spring:
         git:
           uri: https://github.com/alinaarmut/config-repo
           username: alinaarmut
-          password: ${GITHUB_TOKEN}
+          password: token
           default-label: main
 
 server:

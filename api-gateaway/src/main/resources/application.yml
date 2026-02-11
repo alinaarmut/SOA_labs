@@ -37,21 +37,36 @@ eureka:
   server:
     eviction-interval-timer-in-ms: 10000
 zuul:
+  host:
+    connect-timeout-millis: 10000
+    socket-timeout-millis: 60000
   routes:
-    grammy:
+    rest-adapter:
       path: /api/grammy/**
-      serviceId: SERVICE-GRAMMY
+      serviceId: REST-ADAPTER
       strip-prefix: false
 
-SERVICE-GRAMMY:
+#SERVICE-GRAMMY:
+REST-ADAPTER:
   ribbon:
     eager-load:
-      clients: SERVICE-GRAMMY
+      clients: REST-ADAPTER
     ServerListRefreshInterval: 100 # 0,1 с обновление списка
     PingUrl: /actuator/health # тк по умолчанию пингует /
     NFLoadBalancerPingInterval: 2000
     NFLoadBalancerPingClassName: com.netflix.loadbalancer.PingUrl
 
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 10000
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
 logging:
   level:
     root: INFO
@@ -59,4 +74,3 @@ logging:
     example.GrammyResource: DEBUG
     org.springframework.web.client.RestTemplate: DEBUG
     com.netflix.loadbalancer.LoadBalancerContext: DEBUG
-
